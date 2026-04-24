@@ -1,1 +1,134 @@
-/* You can add global styles to this file, and also import other style files */
+/* dobra to tło z tymi kółkami co robią klimat */
+body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at 20% 20%, #1e3a8a, transparent),
+                radial-gradient(circle at 80% 80%, #7c3aed, transparent),
+                #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+}
+
+/* to te przezroczyste panele co wszystko na nich widać */
+.glass {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px;
+}
+
+/* pola tekstowe żeby pasowały do reszty i nie były za jasne */
+.form-control, .form-select {
+    background-color: rgba(15, 23, 42, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+/* te napisy podpowiedzi w polach co ich wcześniej nie szło odczytać */
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    opacity: 1 !important;
+}
+
+/* jak klikniesz w pole to ma tak świecić na niebiesko */
+.form-control:focus, .form-select:focus {
+    background-color: rgba(15, 23, 42, 0.9) !important;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
+}
+
+/* to jest do tych małych list wybieranych w tabeli */
+.form-select-sm {
+    background-color: rgba(15, 23, 42, 0.9) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ogarniamy tabelkę żeby nie miała tego brzydkiego białego tła */
+.table {
+    --bs-table-bg: transparent !important;
+    background-color: transparent !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* wymuszamy białe napisy w tabeli bo inaczej słabo widać */
+.table th, .table td {
+    background-color: transparent !important;
+    color: #ffffff !important; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ceny mają być niebieskie i grube żeby rzucały się w oczy */
+.table td.text-info, 
+.table .text-info {
+    color: #38bdf8 !important;
+    font-weight: bold !important;
+}
+
+/* małe fotki książek w panelu */
+.book-thumb { width: 45px; height: 60px; object-fit: cover; border-radius: 4px; }
+
+/* ten jasny niebieski przycisk co go widać z daleka */
+.btn-info { background: #38bdf8; border: none; color: #000; font-weight: bold; }
+
+/* te małe ramki ze statusem zamówienia u usera */
+.badge.bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #38bdf8;
+}
+
+/* --- IKONY I KOLORY SPECJALNE --- */
+
+/* ustawiamy margines dla wszystkich piktogramów */
+.bi {
+    margin-right: 12px;
+    vertical-align: middle;
+}
+
+/* jasny zielony do magazynu (taki bardziej neonowy/świeży) */
+.text-success {
+    color: #4ade80 !important; /* to jest bardzo jasny, nowoczesny zielony */
+    font-weight: bold !important;
+}
+
+/* przypominam o pomarańczowym dla zamówień */
+.text-warning {
+    color: #fbbf24 !important;
+    font-weight: bold !important;
+}
+
+/* i niebieski dla twojego konta */
+.text-info {
+    color: #38bdf8 !important;
+    font-weight: bold !important;
+}
+
+/* --- KOLORY STATUSÓW --- */
+
+/* ANULOWANE - CZERWONY */
+.status-anulowane {
+    background-color: rgba(220, 38, 38, 0.2) !important;
+    border: 1px solid #ef4444 !important;
+    color: #ef4444 !important;
+}
+
+/* W REALIZACJI - NIEBIESKI */
+.status-realizacja {
+    background-color: rgba(14, 165, 233, 0.2) !important;
+    border: 1px solid #38bdf8 !important;
+    color: #38bdf8 !important;
+}
+
+/* DO ODBIORU - JASNY ZIELONY (jak magazyn) */
+.status-odbior {
+    background-color: rgba(74, 222, 128, 0.2) !important;
+    border: 1px solid #4ade80 !important;
+    color: #4ade80 !important;
+}
+
+/* ZREALIZOWANE - SZARY */
+.status-zrealizowane {
+    background-color: rgba(148, 163, 184, 0.2) !important;
+    border: 1px solid #94a3b8 !important;
+    color: #94a3b8 !important;
+}

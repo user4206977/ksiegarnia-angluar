@@ -1,0 +1,11 @@
+.glass {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Żeby navbar nie zasłaniał treści przy sticky-top */
+.navbar {
+    z-index: 1000;
+}
