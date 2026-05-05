@@ -1,1 +1,44 @@
-<p>register works!</p>
+<div class="container d-flex align-items-center vh-100">
+    <div class="row justify-content-center w-100">
+        <div class="col-11 col-sm-9 col-md-6 col-lg-5">
+            <form (submit)="onRegister($event)" class="glass p-5 text-center shadow-lg">
+                <h2 class="mb-4 fw-bold text-info border-bottom pb-3 text-uppercase">Rejestracja</h2>
+
+                <div *ngIf="errorMessage" class="alert alert-danger bg-transparent border-danger text-danger mb-4 small py-2">
+                    {{ errorMessage }}
+                </div>
+                
+                <div class="form-floating mb-3">
+                    <input type="email" [(ngModel)]="regData.email" name="email" class="form-control" id="rEmail" placeholder="E-mail" required>
+                    <label for="rEmail">Adres e-mail</label>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <input type="text" [(ngModel)]="regData.imie" name="imie" class="form-control" id="rName" placeholder="Imię" required>
+                            <label for="rName">Imię</label>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <input type="text" [(ngModel)]="regData.nazwisko" name="nazwisko" class="form-control" id="rLName" placeholder="Nazwisko" required>
+                            <label for="rLName">Nazwisko</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-floating mb-4">
+                    <input type="password" [(ngModel)]="regData.password" name="password" class="form-control" id="rPass" placeholder="Hasło" required>
+                    <label for="rPass">Hasło</label>
+                </div>
+
+                <button type="submit" class="btn btn-info btn-lg w-100 fw-bold mb-3 shadow">ZAREJESTRUJ</button>
+                
+                <div class="small text-secondary">
+                    Masz już konto? <a href="/login" class="text-info text-decoration-none fw-bold">Zaloguj się</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

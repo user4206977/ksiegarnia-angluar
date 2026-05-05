@@ -1,1 +1,144 @@
-<p>panel works!</p>
+<div class="container py-5">
+    
+    <div class="glass p-4 mb-5 shadow" id="konto">
+        <h2 class="h4 text-info mb-4"><i class="bi bi-person-fill me-2"></i> Moje konto</h2>
+        
+        <div *ngIf="passMsg" [class]="'alert glass border-0 mb-4 ' + (passMsgType === 'success' ? 'alert-success-custom' : 'alert-danger-custom')">
+            <i class="bi" [ngClass]="passMsgType === 'success' ? 'bi-check2-circle' : 'bi-exclamation-triangle'"></i> {{ passMsg }}
+        </div>
+
+        <form (submit)="changePassword($event)" class="row g-3">
+            <div class="col-md-3"><input type="password" [(ngModel)]="passData.old" name="stare" class="form-control panel-input" placeholder="Stare hasło" required></div>
+            <div class="col-md-3"><input type="password" [(ngModel)]="passData.new1" name="haslo1" class="form-control panel-input" placeholder="Nowe hasło" required></div>
+            <div class="col-md-3"><input type="password" [(ngModel)]="passData.new2" name="haslo2" class="form-control panel-input" placeholder="Powtórz nowe" required></div>
+            <div class="col-md-3"><button type="submit" class="btn btn-info w-100 fw-bold">ZMIEŃ HASŁO</button></div>
+        </form>
+    </div>
+
+    <div class="glass p-4 mb-5 shadow">
+        <h2 class="h4 text-info mb-4"><i class="bi bi-cart-fill me-2"></i> Twoje zamówienia</h2>
+        <div class="table-responsive">
+            <table class="table align-middle table-bordered border-secondary text-center text-white">
+                <thead class="text-secondary small text-uppercase">
+                    <tr><th>Data</th><th class="text-start">Produkty</th><th>Kwota</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let o of userOrders">
+                        <td class="small">{{ o.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
+                        <td class="small text-start">{{ o.items_summary }}</td>
+                        <td class="text-info fw-bold">{{ o.total_price | number:'1.2-2' }} zł</td>
+                        <td><span class="badge" [ngClass]="getStatusClass(o.status)">{{ o.status }}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <ng-container *ngIf="isAdmin">
+        <hr class="my-5 opacity-10">
+
+        <div class="glass p-4 mb-5 shadow" id="zamowienia_admin">
+            <h2 class="h4 text-warning mb-4"><i class="bi bi-box-seam-fill me-2"></i> Wszystkie Zamówienia</h2>
+            <div class="table-responsive">
+                <table class="table align-middle table-bordered border-secondary text-center text-white">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Klient</th>
+                            <th class="text-start">Produkty</th>
+                            <th>Status</th>
+                            <th>Akcja</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let ord of allOrders">
+                            <td class="small">{{ ord.order_date | date:'yyyy-MM-dd HH:mm' }}</td>
+                            <td class="small text-info">{{ ord.email }}</td>
+                            <td class="small text-start">{{ ord.items_summary }}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <select [(ngModel)]="ord.status" class="form-select form-select-sm w-auto panel-input" [ngClass]="getStatusClass(ord.status)">
+                                        <option value="ANULOWANE">ANULOWANE</option>
+                                        <option value="W REALIZACJI">W REALIZACJI</option>
+                                        <option value="DO ODBIORU">DO ODBIORU</option>
+                                        <option value="ZREALIZOWANE">ZREALIZOWANE</option>
+                                    </select>
+                                    <button (click)="updateOrderStatus(ord.id, ord.status)" class="btn btn-info btn-center">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <button (click)="deleteOrder(ord.id)" class="btn btn-danger btn-center">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass p-4 mb-5 shadow" id="uzytkownicy">
+            <h2 class="h4 text-warning mb-4"><i class="bi bi-people-fill me-2"></i> Zarządzanie Użytkownikami</h2>
+            <div class="table-responsive">
+                <table class="table align-middle table-bordered border-secondary text-center text-white">
+                    <thead><tr><th>E-mail</th><th>Rola</th><th>Zmień</th><th>Usuń</th></tr></thead>
+                    <tbody>
+                        <tr *ngFor="let u of allUsers">
+                            <td class="text-start">{{ u.email }}</td>
+                            <td><span class="badge" [class]="u.role === 'admin' ? 'bg-danger' : 'bg-primary'">{{ u.role | uppercase }}</span></td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <select [(ngModel)]="u.newRole" class="form-select form-select-sm w-auto panel-input">
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                    <button (click)="updateUserRole(u)" class="btn btn-info btn-center"><i class="bi bi-check-lg"></i></button>
+                                </div>
+                            </td>
+                            <td>
+                                <button *ngIf="u.id !== currentUserId" (click)="deleteUser(u.id)" class="btn btn-danger btn-center"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass p-4 shadow" id="magazyn">
+            <h2 class="h4 text-success mb-4"><i class="bi bi-bookshelf me-2"></i> Magazyn</h2>
+            
+            <form (submit)="addBook($event)" class="row g-2 mb-4 p-3 glass" style="background: rgba(0,0,0,0.2) !important;">
+                <div class="col-md-3"><input type="text" [(ngModel)]="newBook.title" name="t" class="form-control panel-input" placeholder="Tytuł" required></div>
+                <div class="col-md-2"><input type="text" [(ngModel)]="newBook.author" name="a" class="form-control panel-input" placeholder="Autor" required></div>
+                <div class="col-md-2"><input type="number" step="0.01" [(ngModel)]="newBook.price" name="p" class="form-control panel-input" placeholder="Cena" required></div>
+                <div class="col-md-2"><input type="number" [(ngModel)]="newBook.stock" name="s" class="form-control panel-input" placeholder="Ilość" required></div>
+                <div class="col-md-3"><input type="file" (change)="onFileSelected($event)" class="form-control panel-input"></div>
+                <div class="col-12 mt-2"><button type="submit" class="btn btn-success w-100 fw-bold">DODAJ NOWĄ KSIĄŻKĘ</button></div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table align-middle table-bordered border-secondary text-center text-white">
+                    <thead><tr><th>Foto</th><th class="text-start">Tytuł</th><th>Cena & Stan</th><th>Akcja</th></tr></thead>
+                    <tbody>
+                        <tr *ngFor="let b of allBooks">
+                            <td><img [src]="'http://192.168.254.102:3000/img/' + b.image" class="book-thumb" style="width: 40px; height: 60px; object-fit: cover;"></td>
+                            <td class="text-start fw-bold">{{ b.title }}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <input type="number" step="0.01" [(ngModel)]="b.price" class="panel-input text-center" style="width:80px">
+                                    <input type="number" [(ngModel)]="b.stock" class="panel-input text-center" style="width:65px">
+                                    <button (click)="updateBook(b)" class="btn btn-primary btn-center"><i class="bi bi-check-lg"></i></button>
+                                </div>
+                            </td>
+                            <td>
+                                <button (click)="deleteBook(b.id)" class="btn btn-danger btn-center"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </ng-container>
+</div>

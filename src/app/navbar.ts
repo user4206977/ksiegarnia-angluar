@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Ważne dla *ngIf
+import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { ApiService } from './services/api'; // Zaimportuj ApiService
 
 @Component({
   selector: 'app-navbar',
@@ -10,30 +11,43 @@ import { RouterModule, Router } from '@angular/router';
   styleUrl: './navbar.css',
 })
 export class Navbar implements OnInit {
-  // Odpowiednik Twoich zmiennych z PHP
   totalInCart: number = 0;
   isLoggedIn: boolean = false;
+  isAdmin: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private api: ApiService // Wstrzyknij ApiService
+  ) {}
 
   ngOnInit() {
-    // Tutaj później dodamy prawdziwe sprawdzanie z serwisu
-    // Na razie ustawiamy na sztywno, żebyś widział, że działa
-    this.checkSession();
+    // SUBSKRYPCJA STATUSU UŻYTKOWNIKA
+    this.api.user$.subscribe(user => {
+      if (user) {
+        this.isLoggedIn = true;
+        this.isAdmin = user.role && user.role.toLowerCase() === 'admin';
+      } else {
+        this.isLoggedIn = false;
+        this.isAdmin = false;
+      }
+    });
+
+    this.api.cart$.subscribe(count => this.totalInCart = count);
+    this.api.updateCartCount();
   }
 
-  checkSession() {
-    // Symulacja: sprawdź czy w localStorage jest użytkownik
-    this.isLoggedIn = !!localStorage.getItem('user_id');
-    
-    // Symulacja: policz przedmioty w koszyku (później pobierzemy to z serwisu)
+  updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart') || '{}');
     this.totalInCart = Object.values(cart).reduce((a: any, b: any) => a + b, 0) as number;
   }
 
   logout() {
-    localStorage.removeItem('user_id');
-    this.isLoggedIn = false;
+    localStorage.removeItem('user');
+    
+    // POWIADOM API O WYLOGOWANIU
+    this.api.updateUserStatus(); 
+
     this.router.navigate(['/login']);
+    // Już nie potrzebujemy window.location.reload(), bo subskrypcja sama odświeży Navbar!
   }
 }

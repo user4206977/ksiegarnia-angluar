@@ -1,0 +1,28 @@
+.glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+/* Triki z Twojego PHP */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    background: transparent !important;
+    color: #0dcaf0 !important;
+    opacity: 1;
+}
+
+.form-floating > label {
+    color: rgba(255,255,255,0.5);
+}
+
+.btn-info {
+    color: #fff !important;
+}

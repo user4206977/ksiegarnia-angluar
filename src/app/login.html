@@ -1,1 +1,35 @@
-<p>login works!</p>
+<div class="d-flex align-items-center vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-11 col-sm-8 col-md-5 col-lg-4">
+                <form (submit)="onLogin($event)" class="glass p-5 text-center shadow-lg">
+                    <h2 class="mb-4 fw-bold text-info border-bottom pb-3">LOGOWANIE</h2>
+                    
+                    <div *ngIf="errorMessage" class="alert alert-danger p-2 small mb-3">
+                        {{ errorMessage }}
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="email" [(ngModel)]="email" name="nazwa" 
+                               class="form-control" id="fEmail" required>
+                        <label for="fEmail" class="text-secondary">Adres e-mail</label>
+                    </div>
+                    
+                    <div class="form-floating mb-4">
+                        <input type="password" [(ngModel)]="password" name="haslo" 
+                               class="form-control" id="fPass" required>
+                        <label for="fPass" class="text-secondary">Hasło</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-info btn-lg w-100 fw-bold text-white mb-3">
+                        ZALOGUJ
+                    </button>
+                    
+                    <div class="small text-main">
+                        Nie masz konta? <a routerLink="/register" class="text-info text-decoration-none fw-bold">Załóż je tutaj</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

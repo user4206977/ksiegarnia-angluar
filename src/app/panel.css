@@ -1,0 +1,43 @@
+.btn-center {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    vertical-align: middle;
+}
+
+.btn-center i {
+    line-height: 0 !important;
+    display: inline-block;
+    margin: 0;
+}
+
+.panel-input {
+    height: 36px;
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: white !important;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* Statusy zamówień */
+.status-anulowane { background-color: #ef4444; }
+.status-realizacja { background-color: #3b82f6; }
+.status-odbior { background-color: #f59e0b; }
+.status-zrealizowane { background-color: #10b981; }
+
+/* Alerty Glass */
+.alert-success-custom {
+    background: rgba(74, 222, 128, 0.15) !important;
+    color: #4ade80;
+    border-left: 4px solid #4ade80 !important;
+}
+
+.alert-danger-custom {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #f87171;
+    border-left: 4px solid #ef4444 !important;
+}

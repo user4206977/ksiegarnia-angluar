@@ -1,1 +1,68 @@
-<p>cart works!</p>
+<main class="container py-5">
+    <div class="glass p-4 shadow">
+        <h2 class="h4 text-info mb-4"><i class="bi bi-cart-fill me-2"></i> Twój Koszyk</h2>
+        
+        <div *ngIf="cartItems.length > 0" class="alert alert-dark d-none d-block-debug">
+            W koszyku produktów: {{ cartItems.length }}
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle table-dark table-bordered border-secondary text-center" *ngIf="cartItems && cartItems.length > 0">
+                <thead class="text-secondary small text-uppercase">
+                    <tr>
+                        <th style="width: 80px;">Foto</th>
+                        <th class="text-start">Produkt</th>
+                        <th style="width: 180px;">Ilość</th>
+                        <th>Suma</th>
+                        <th>Akcja</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of cartItems; trackBy: trackByFn">
+                        <td>
+                            <img [src]="item.image ? 'http://192.168.254.104:3000/img/' + item.image : 'http://192.168.254.104:3000/img/default.png'" class="book-img-cart" alt="okładka">
+                        </td>
+                        <td class="fw-bold text-white text-start">
+                            {{ item.title }}
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <input type="number" 
+                                           [(ngModel)]="item.quantity" 
+                                           [min]="1" 
+                                           [max]="item.stock" 
+                                           class="qty-input">
+                                    <button (click)="updateQty(item.id, item.quantity)" class="btn btn-info btn-center">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                </div>
+                                <span class="stock-label">Dostępne: <strong>{{ item.stock }}</strong></span>
+                            </div>
+                        </td>
+                        <td class="text-info fw-bold">
+                            {{ (item.price * item.quantity) | number:'1.2-2' }} zł
+                        </td>
+                        <td>
+                            <button (click)="removeItem(item.id)" class="btn btn-outline-danger btn-center">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div *ngIf="cartItems.length === 0" class="text-center py-5 text-secondary">
+                <i class="bi bi-cart-x fs-1 d-block mb-3"></i>
+                Koszyk jest pusty
+            </div>
+        </div>
+
+        <div class="text-end mt-4" *ngIf="cartItems.length > 0">
+            <p class="fs-4 text-white">Razem: <span class="text-info fw-bold">{{ totalPrice | number:'1.2-2' }} zł</span></p>
+            <button (click)="placeOrder()" class="btn btn-info btn-lg px-5 fw-bold shadow text-uppercase">
+                Złóż zamówienie
+            </button>
+        </div>
+    </div>
+</main>
