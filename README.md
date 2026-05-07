@@ -103,4 +103,4 @@ Zdjęcia książek są przechowywane w folderze `/img` na serwerze.
 *   **Wojciech Złonkiewicz**
 
 ---
-*Dokumentacja utworzona na potrzeby projektu "Księgarnia Internetowa" - 2026.*
+*Dokumentacja utworzona na potrzeby projektu "Księgarnia" - 2026.*
