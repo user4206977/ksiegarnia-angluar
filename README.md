@@ -1,63 +1,106 @@
-# KsiegarniaFrontend
+# 📚 System Zarządzania Księgarnią Internetową
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+Kompletna aplikacja webowa do zarządzania sprzedażą książek, składająca się z frontendu w Angularze oraz backendu w Node.js z bazą danych PostgreSQL.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🛠️ Architektura Systemu
+*   **Frontend:** Angular (v21.2.8)
+*   **Backend:** Node.js + Express.js
+*   **Baza danych:** PostgreSQL
+*   **Komunikacja:** REST API + Socket.io (powiadomienia w czasie rzeczywistym)
 
+---
+
+## 🗄️ Backend i Baza Danych
+
+### Instrukcja Przywracania Bazy Danych PostgreSQL
+Poniższa instrukcja opisuje proces przenoszenia i importu bazy danych z pliku `.sql` na serwer PostgreSQL (Linux).
+
+#### 1. Przesłanie pliku na serwer
+Jeśli masz plik na Windowsie, prześlij go na serwer (używając PowerShell lub CMD):
 ```bash
-ng serve
+scp ksiegarnia.sql uzytkownik_linux@adres_ip_serwera:~/
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+#### 2. Przygotowanie bazy danych
+Najpierw należy utworzyć pustą bazę, do której trafią dane. Zaloguj się na serwer i wykonaj:
 ```bash
-ng generate component component-name
+sudo -u postgres psql
+```
+Wewnątrz powłoki `psql` wpisz:
+```sql
+CREATE DATABASE ksiegarnia;
+\q
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+#### 3. Import danych
+Wykonaj poniższą komendę w terminalu Ubuntu (nie wewnątrz psql), aby wgrać dane z pliku:
 ```bash
-ng generate --help
+sudo -u postgres psql ksiegarnia < ksiegarnia.sql
 ```
 
-## Building
+> **Wskazówka:** Jeśli otrzymasz błąd uprawnień, nadaj plikowi prawa do odczytu:
+> `chmod 644 ksiegarnia.sql`
 
-To build the project run:
+---
 
-```bash
-ng build
-```
+## 💻 Frontend (Angular)
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Uruchamianie lokalne
+Aby zainstalować zależności i uruchomić serwer deweloperski:
 
-## Running unit tests
+1.  Zainstaluj paczki: `npm install`
+2.  Uruchom projekt:
+    ```bash
+    ng serve
+    ```
+3.  Otwórz przeglądarkę na: `http://localhost:4200/`
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Przydatne komendy Angular CLI
 
-```bash
-ng test
-```
+| Zadanie | Komenda |
+| :--- | :--- |
+| **Generowanie komponentu** | `ng generate component nazwa-komponentu` |
+| **Budowanie wersji produkcyjnej** | `ng build` |
+| **Testy jednostkowe (Vitest)** | `ng test` |
+| **Pomoc CLI** | `ng generate --help` |
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🚀 Instalacja Backend (Node.js)
 
-```bash
-ng e2e
-```
+1.  Wejdź do katalogu serwera.
+2.  Zainstaluj zależności:
+    ```bash
+    npm install
+    ```
+3.  Skonfiguruj plik `.env`:
+    ```env
+    DB_USER=postgres
+    DB_HOST=localhost
+    DB_NAME=ksiegarnia
+    DB_PASSWORD=twoje_haslo
+    JWT_SECRET=super_tajny_klucz
+    PORT=3000
+    ```
+4.  Uruchom serwer:
+    ```bash
+    node index.js
+    ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 📸 Zarządzanie Zdjęciami
+Zdjęcia książek są przechowywane w folderze `/img` na serwerze.
+*   **Dostęp przez URL:** `http://IP_SERWERA:3000/img/nazwa_pliku.jpg`
+*   **Uprawnienia:** Upewnij się, że folder ma uprawnienia `755`, aby serwer mógł serwować pliki.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
 
-## Authors
+## 👥 Autorzy
+*   **Maciej Strzelec**
+*   **Wojciech Złonkiewicz**
 
-Maciej Strzelec & Wojciech Złonkiewicz
+---
+*Dokumentacja utworzona na potrzeby projektu "Księgarnia" - 2026.*
