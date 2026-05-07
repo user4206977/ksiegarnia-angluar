@@ -1,134 +1,102 @@
-/* dobra to tło z tymi kółkami co robią klimat */
+/* Główne ustawienia tła i kolorów dla całej aplikacji */
 body {
-    font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at 20% 20%, #1e3a8a, transparent),
-                radial-gradient(circle at 80% 80%, #7c3aed, transparent),
-                #0f172a;
-    color: #e2e8f0;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    
+    /* Jaśniejszy, bardziej nasycony gradient */
+    /* Używamy #1a1f2b jako bazy - to głęboki, ale widoczny granat */
+    background: radial-gradient(circle at top right, #1e2533, #11141d);
+    background-attachment: fixed;
+    
+    color: #f0f0f0;
     min-height: 100vh;
 }
 
-/* to te przezroczyste panele co wszystko na nich widać */
+/* Warstwa poświaty - teraz nieco wyraźniejsza (5%), aby dodać życia tłu */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 20%, rgba(13, 202, 240, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Globalne ustawienia dla kart typu glass */
 .glass {
-    background: rgba(255, 255, 255, 0.05) !important;
+    /* Lekko zwiększamy widoczność tafli szkła */
+    background: rgba(255, 255, 255, 0.04) !important;
     backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 20px;
+    /* Cień jest teraz lżejszy i bardziej rozproszony */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* pola tekstowe żeby pasowały do reszty i nie były za jasne */
-.form-control, .form-select {
-    background-color: rgba(15, 23, 42, 0.8) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
+/* Stylizacja scrollbara */
+::-webkit-scrollbar {
+    width: 10px;
 }
 
-/* te napisy podpowiedzi w polach co ich wcześniej nie szło odczytać */
-.form-control::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-    opacity: 1 !important;
+::-webkit-scrollbar-track {
+    background: #11141d;
 }
 
-/* jak klikniesz w pole to ma tak świecić na niebiesko */
-.form-control:focus, .form-select:focus {
-    background-color: rgba(15, 23, 42, 0.9) !important;
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
+::-webkit-scrollbar-thumb {
+    background: #2c3447;
+    border-radius: 10px;
+    border: 2px solid #11141d; /* Efekt odstępu od krawędzi */
 }
 
-/* to jest do tych małych list wybieranych w tabeli */
-.form-select-sm {
-    background-color: rgba(15, 23, 42, 0.9) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+::-webkit-scrollbar-thumb:hover {
+    background: #0dcaf0;
 }
 
-/* ogarniamy tabelkę żeby nie miała tego brzydkiego białego tła */
+/* Poprawka dla tabel, aby wiersze były lepiej widoczne na tym tle */
 .table {
-    --bs-table-bg: transparent !important;
-    background-color: transparent !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
-/* wymuszamy białe napisy w tabeli bo inaczej słabo widać */
-.table th, .table td {
-    background-color: transparent !important;
-    color: #ffffff !important; 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+.table thead th {
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ceny mają być niebieskie i grube żeby rzucały się w oczy */
-.table td.text-info, 
-.table .text-info {
-    color: #38bdf8 !important;
-    font-weight: bold !important;
+/* Globalny focus dla inputów, aby pasował do jasnego turkusu */
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.2);
 }
 
-/* małe fotki książek w panelu */
-.book-thumb { width: 45px; height: 60px; object-fit: cover; border-radius: 4px; }
+/* Wymuszenie jasnego koloru dla placeholderów we wszystkich przeglądarkach */
 
-/* ten jasny niebieski przycisk co go widać z daleka */
-.btn-info { background: #38bdf8; border: none; color: #000; font-weight: bold; }
-
-/* te małe ramki ze statusem zamówienia u usera */
-.badge.bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #38bdf8;
+/* Chrome, Firefox, Edge, Opera */
+::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+    opacity: 1; /* Firefox domyślnie zmniejsza opacity */
 }
 
-/* --- IKONY I KOLORY SPECJALNE --- */
-
-/* ustawiamy margines dla wszystkich piktogramów */
-.bi {
-    margin-right: 12px;
-    vertical-align: middle;
+/* Internet Explorer 10-11 */
+:-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* jasny zielony do magazynu (taki bardziej neonowy/świeży) */
-.text-success {
-    color: #4ade80 !important; /* to jest bardzo jasny, nowoczesny zielony */
-    font-weight: bold !important;
+/* Microsoft Edge */
+::-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* przypominam o pomarańczowym dla zamówień */
-.text-warning {
-    color: #fbbf24 !important;
-    font-weight: bold !important;
+/* Specyficzna poprawka dla pól w panelu, jeśli chcesz, by były jeszcze jaśniejsze */
+.panel-input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* i niebieski dla twojego konta */
-.text-info {
-    color: #38bdf8 !important;
-    font-weight: bold !important;
-}
-
-/* --- KOLORY STATUSÓW --- */
-
-/* ANULOWANE - CZERWONY */
-.status-anulowane {
-    background-color: rgba(220, 38, 38, 0.2) !important;
-    border: 1px solid #ef4444 !important;
-    color: #ef4444 !important;
-}
-
-/* W REALIZACJI - NIEBIESKI */
-.status-realizacja {
-    background-color: rgba(14, 165, 233, 0.2) !important;
-    border: 1px solid #38bdf8 !important;
-    color: #38bdf8 !important;
-}
-
-/* DO ODBIORU - JASNY ZIELONY (jak magazyn) */
-.status-odbior {
-    background-color: rgba(74, 222, 128, 0.2) !important;
-    border: 1px solid #4ade80 !important;
-    color: #4ade80 !important;
-}
-
-/* ZREALIZOWANE - SZARY */
-.status-zrealizowane {
-    background-color: rgba(148, 163, 184, 0.2) !important;
-    border: 1px solid #94a3b8 !important;
-    color: #94a3b8 !important;
+/* Poprawka dla pól typu floating (rejestracja), żeby labelki po "podniesieniu" też były czytelne */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: #0dcaf0 !important;
+    font-weight: 600;
 }

@@ -13,16 +13,16 @@
 
         <form (submit)="changePassword($event)" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label small text-secondary">Obecne hasło</label>
-                <input type="password" [(ngModel)]="passData.old" name="stare" class="form-control panel-input" placeholder="••••••••" required>
+                <label class="form-label small text-light">Obecne hasło</label>
+                <input type="password" [(ngModel)]="passData.old" name="stare" class="form-control panel-input" placeholder="Wpisz obecne hasło" required>
             </div>
             <div class="col-md-3">
-                <label class="form-label small text-secondary">Nowe hasło</label>
-                <input type="password" [(ngModel)]="passData.new1" name="haslo1" class="form-control panel-input" placeholder="Min. 6 znaków" required>
+                <label class="form-label small text-light">Nowe hasło</label>
+                <input type="password" [(ngModel)]="passData.new1" name="haslo1" class="form-control panel-input" placeholder="Wpisz nowe hasło" required>
             </div>
             <div class="col-md-3">
-                <label class="form-label small text-secondary">Powtórz hasło</label>
-                <input type="password" [(ngModel)]="passData.new2" name="haslo2" class="form-control panel-input" placeholder="••••••••" required>
+                <label class="form-label small text-light">Powtórz hasło</label>
+                <input type="password" [(ngModel)]="passData.new2" name="haslo2" class="form-control panel-input" placeholder="Wpisz ponownie nowe hasło" required>
             </div>
             <div class="col-md-3 d-flex align-items-end">
                 <button type="submit" class="btn btn-info w-100 fw-bold py-2 shadow-sm">
@@ -67,9 +67,9 @@
     <!-- SEKCJE ADMINISTRATORA -->
     <ng-container *ngIf="isAdmin">
         <div class="d-flex align-items-center mb-4 mt-5">
-            <hr class="flex-grow-1 opacity-10">
+            <hr class="flex-grow-1 opacity-100 text-warning">
             <span class="mx-3 badge bg-warning text-dark px-4 py-2 fw-bold shadow-sm">PANEL ADMINISTRATORA</span>
-            <hr class="flex-grow-1 opacity-10">
+            <hr class="flex-grow-1 opacity-100 text-warning">
         </div>
 
         <!-- ADMIN: ZAMÓWIENIA -->

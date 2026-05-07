@@ -55,11 +55,11 @@
 }
 
 /* Specyficzne statusy */
-.status-anulowane { background: #dc3545 !important; color: white; }
-.status-realizacja { background: #ffc107 !important; color: #000; }
-.status-odbior { background: #198754 !important; color: white; }
-.status-zrealizowane { background: #0dcaf0 !important; color: #000; }
-.status-default { background: #6c757d !important; color: white; }
+.status-anulowane { background: #dc3545 !important; color: white !important; }
+.status-realizacja { background: #ffc107 !important; color: #000 !important; }
+.status-odbior { background: #198754 !important; color: white !important; }
+.status-zrealizowane { background: #0dcaf0 !important; color: #000 !important; }
+.status-default { background: #6c757d !important; color: white !important; }
 
 /* Custom Alerty */
 .alert-success-custom {
