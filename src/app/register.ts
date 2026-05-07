@@ -26,7 +26,7 @@ export class Register {
     event.preventDefault();
     this.errorMessage = '';
 
-    this.http.post('http://192.168.254.102:3000/ksiegarnia-api/register', this.regData)
+    this.http.post('http://192.168.254.110:3000/ksiegarnia-api/register', this.regData)
       .subscribe({
         next: () => {
           // Po sukcesie przekieruj do logowania z parametrem msg

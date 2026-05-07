@@ -20,7 +20,7 @@
                 <tbody>
                     <tr *ngFor="let item of cartItems; trackBy: trackByFn">
                         <td>
-                            <img [src]="item.image ? 'http://192.168.254.104:3000/img/' + item.image : 'http://192.168.254.104:3000/img/default.png'" class="book-img-cart" alt="okładka">
+                            <img [src]="item.image ? 'http://192.168.254.110:3000/img/' + item.image : 'http://192.168.254.110:3000/img/default.png'" class="book-img-cart" alt="okładka">
                         </td>
                         <td class="fw-bold text-white text-start">
                             {{ item.title }}
@@ -52,7 +52,7 @@
                 </tbody>
             </table>
 
-            <div *ngIf="cartItems.length === 0" class="text-center py-5 text-secondary">
+            <div *ngIf="cartItems.length === 0" class="text-center py-5 text-light">
                 <i class="bi bi-cart-x fs-1 d-block mb-3"></i>
                 Koszyk jest pusty
             </div>

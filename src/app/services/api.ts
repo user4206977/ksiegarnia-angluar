@@ -6,7 +6,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://192.168.254.102:3000/ksiegarnia-api'; 
+  private apiUrl = 'http://192.168.254.110:3000/ksiegarnia-api'; 
 
   // Strumienie danych (Subjects)
   private userSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('user') || 'null'));

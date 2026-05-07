@@ -31,7 +31,7 @@ export class Login {
       password: this.password
     };
 
-    this.http.post<any>('http://192.168.254.105:3000/ksiegarnia-api/login', loginData).subscribe({
+    this.http.post<any>('http://192.168.254.110:3000/ksiegarnia-api/login', loginData).subscribe({
       next: (res) => {
         const userToSave = {
           id: res.user.id,

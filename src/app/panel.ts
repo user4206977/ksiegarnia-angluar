@@ -104,8 +104,8 @@ export class Panel implements OnInit {
     const s = status.toUpperCase();
     if (s.includes('ANULOWANE')) return 'bg-danger';
     if (s.includes('REALIZACJI')) return 'bg-warning text-dark';
-    if (s.includes('DO ODBIORU')) return 'bg-info text-dark';
-    if (s.includes('ZREALIZOWANE')) return 'bg-success';
+    if (s.includes('DO ODBIORU')) return 'bg-success';
+    if (s.includes('ZREALIZOWANE')) return 'bg-info text-dark';
     return 'bg-secondary';
   }
 

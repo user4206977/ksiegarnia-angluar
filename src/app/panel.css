@@ -25,9 +25,9 @@
 
 /* Statusy zamówień */
 .status-anulowane { background-color: #ef4444; }
-.status-realizacja { background-color: #3b82f6; }
-.status-odbior { background-color: #f59e0b; }
-.status-zrealizowane { background-color: #10b981; }
+.status-realizacja { background-color: #f59e0b; }
+.status-odbior { background-color: #10b981; }
+.status-zrealizowane { background-color: #3b82f6; }
 
 /* Alerty Glass */
 .alert-success-custom {
@@ -40,4 +40,9 @@
     background: rgba(239, 68, 68, 0.15) !important;
     color: #f87171;
     border-left: 4px solid #ef4444 !important;
+}
+
+select.form-select option {
+  color: black;
+  background-color: white;
 }

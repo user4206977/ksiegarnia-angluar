@@ -123,7 +123,7 @@
                     <thead><tr><th>Foto</th><th class="text-start">Tytuł</th><th>Cena & Stan</th><th>Akcja</th></tr></thead>
                     <tbody>
                         <tr *ngFor="let b of allBooks">
-                            <td><img [src]="'http://192.168.254.102:3000/img/' + b.image" class="book-thumb" style="width: 40px; height: 60px; object-fit: cover;"></td>
+                            <td><img [src]="'http://192.168.254.110:3000/img/' + b.image" class="book-thumb" style="width: 40px; height: 60px; object-fit: cover;"></td>
                             <td class="text-start fw-bold">{{ b.title }}</td>
                             <td>
                                 <div class="d-flex align-items-center justify-content-center gap-2">
