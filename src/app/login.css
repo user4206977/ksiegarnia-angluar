@@ -3,21 +3,45 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 15px;
     backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease-out;
 }
 
-/* Styl dla form-floating, aby pasował do ciemnego motywu */
+/* Stylizacja pól formularza dla ciemnego motywu */
 .form-control {
     background-color: rgba(0, 0, 0, 0.2) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: white !important;
+    transition: all 0.3s ease;
 }
 
 .form-control:focus {
     background-color: rgba(0, 0, 0, 0.4) !important;
     border-color: #0dcaf0 !important;
-    box-shadow: none !important;
+    box-shadow: 0 0 10px rgba(13, 202, 240, 0.2) !important;
+    outline: none;
 }
 
 .form-floating > label {
     color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Ustawienia przycisku */
+.btn-info {
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn-info:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.btn-info:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Animacja wejścia */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

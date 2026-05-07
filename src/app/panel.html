@@ -1,76 +1,112 @@
 <div class="container py-5">
     
-    <div class="glass p-4 mb-5 shadow" id="konto">
-        <h2 class="h4 text-info mb-4"><i class="bi bi-person-fill me-2"></i> Moje konto</h2>
+    <!-- SEKCOJA: MOJE KONTO -->
+    <div class="glass p-4 mb-5 shadow-lg border-light-subtle">
+        <h2 class="h4 text-info mb-4 d-flex align-items-center">
+            <i class="bi bi-person-circle me-2"></i> Moje konto
+        </h2>
         
-        <div *ngIf="passMsg" [class]="'alert glass border-0 mb-4 ' + (passMsgType === 'success' ? 'alert-success-custom' : 'alert-danger-custom')">
-            <i class="bi" [ngClass]="passMsgType === 'success' ? 'bi-check2-circle' : 'bi-exclamation-triangle'"></i> {{ passMsg }}
+        <div *ngIf="passMsg" [class]="'alert border-0 shadow-sm mb-4 ' + (passMsgType === 'success' ? 'alert-success-custom' : 'alert-danger-custom')">
+            <i class="bi me-2" [ngClass]="passMsgType === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-octagon-fill'"></i>
+            {{ passMsg }}
         </div>
 
         <form (submit)="changePassword($event)" class="row g-3">
-            <div class="col-md-3"><input type="password" [(ngModel)]="passData.old" name="stare" class="form-control panel-input" placeholder="Stare hasło" required></div>
-            <div class="col-md-3"><input type="password" [(ngModel)]="passData.new1" name="haslo1" class="form-control panel-input" placeholder="Nowe hasło" required></div>
-            <div class="col-md-3"><input type="password" [(ngModel)]="passData.new2" name="haslo2" class="form-control panel-input" placeholder="Powtórz nowe" required></div>
-            <div class="col-md-3"><button type="submit" class="btn btn-info w-100 fw-bold">ZMIEŃ HASŁO</button></div>
+            <div class="col-md-3">
+                <label class="form-label small text-secondary">Obecne hasło</label>
+                <input type="password" [(ngModel)]="passData.old" name="stare" class="form-control panel-input" placeholder="••••••••" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-secondary">Nowe hasło</label>
+                <input type="password" [(ngModel)]="passData.new1" name="haslo1" class="form-control panel-input" placeholder="Min. 6 znaków" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-secondary">Powtórz hasło</label>
+                <input type="password" [(ngModel)]="passData.new2" name="haslo2" class="form-control panel-input" placeholder="••••••••" required>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-info w-100 fw-bold py-2 shadow-sm">
+                    AKTUALIZUJ HASŁO
+                </button>
+            </div>
         </form>
     </div>
 
-    <div class="glass p-4 mb-5 shadow">
-        <h2 class="h4 text-info mb-4"><i class="bi bi-cart-fill me-2"></i> Twoje zamówienia</h2>
+    <!-- SEKCJA: ZAMÓWIENIA UŻYTKOWNIKA -->
+    <div class="glass p-4 mb-5 shadow-lg">
+        <h2 class="h4 text-info mb-4"><i class="bi bi-bag-check-fill me-2"></i> Twoja historia zamówień</h2>
         <div class="table-responsive">
-            <table class="table align-middle table-bordered border-secondary text-center text-white">
+            <table class="table align-middle text-white border-transparent">
                 <thead class="text-secondary small text-uppercase">
-                    <tr><th>Data</th><th class="text-start">Produkty</th><th>Kwota</th><th>Status</th></tr>
+                    <tr>
+                        <th>Data</th>
+                        <th class="text-start">Szczegóły</th>
+                        <th>Suma</th>
+                        <th>Status</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let o of userOrders">
-                        <td class="small">{{ o.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
+                    <tr *ngFor="let o of userOrders" class="border-bottom border-white-10">
+                        <td class="small opacity-75">{{ o.created_at | date:'dd.MM.yyyy HH:mm' }}</td>
                         <td class="small text-start">{{ o.items_summary }}</td>
-                        <td class="text-info fw-bold">{{ o.total_price | number:'1.2-2' }} zł</td>
-                        <td><span class="badge" [ngClass]="getStatusClass(o.status)">{{ o.status }}</span></td>
+                        <td class="fw-bold text-info">{{ o.total_price | number:'1.2-2' }} zł</td>
+                        <td>
+                            <span class="badge rounded-pill px-3 py-2 shadow-sm" [ngClass]="getStatusClass(o.status)">
+                                {{ o.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="userOrders.length === 0">
+                        <td colspan="4" class="text-center py-4 text-secondary italic">Nie dokonałeś jeszcze żadnych zakupów.</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- SEKCJE ADMINISTRATORA -->
     <ng-container *ngIf="isAdmin">
-        <hr class="my-5 opacity-10">
+        <div class="d-flex align-items-center mb-4 mt-5">
+            <hr class="flex-grow-1 opacity-10">
+            <span class="mx-3 badge bg-warning text-dark px-4 py-2 fw-bold shadow-sm">PANEL ADMINISTRATORA</span>
+            <hr class="flex-grow-1 opacity-10">
+        </div>
 
-        <div class="glass p-4 mb-5 shadow" id="zamowienia_admin">
-            <h2 class="h4 text-warning mb-4"><i class="bi bi-box-seam-fill me-2"></i> Wszystkie Zamówienia</h2>
+        <!-- ADMIN: ZAMÓWIENIA -->
+        <div class="glass p-4 mb-5 shadow-lg border-warning-subtle">
+            <h2 class="h4 text-warning mb-4"><i class="bi bi-kanban me-2"></i> Zarządzanie zamówieniami</h2>
             <div class="table-responsive">
-                <table class="table align-middle table-bordered border-secondary text-center text-white">
-                    <thead>
+                <table class="table align-middle text-white">
+                    <thead class="text-secondary small">
                         <tr>
                             <th>Data</th>
                             <th>Klient</th>
                             <th class="text-start">Produkty</th>
-                            <th>Status</th>
-                            <th>Akcja</th>
+                            <th>Status zamówienia</th>
+                            <th>Akcje</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let ord of allOrders">
-                            <td class="small">{{ ord.order_date | date:'yyyy-MM-dd HH:mm' }}</td>
+                        <tr *ngFor="let ord of allOrders" class="border-bottom border-white-10">
+                            <td class="small">{{ ord.order_date | date:'dd.MM HH:mm' }}</td>
                             <td class="small text-info">{{ ord.email }}</td>
-                            <td class="small text-start">{{ ord.items_summary }}</td>
+                            <td class="small text-start opacity-75">{{ ord.items_summary }}</td>
                             <td>
-                                <div class="d-flex align-items-center justify-content-center gap-1">
-                                    <select [(ngModel)]="ord.status" class="form-select form-select-sm w-auto panel-input" [ngClass]="getStatusClass(ord.status)">
+                                <div class="d-flex align-items-center gap-1">
+                                    <select [(ngModel)]="ord.status" class="form-select form-select-sm panel-input-select" [ngClass]="getStatusClass(ord.status)">
                                         <option value="ANULOWANE">ANULOWANE</option>
                                         <option value="W REALIZACJI">W REALIZACJI</option>
                                         <option value="DO ODBIORU">DO ODBIORU</option>
                                         <option value="ZREALIZOWANE">ZREALIZOWANE</option>
                                     </select>
-                                    <button (click)="updateOrderStatus(ord.id, ord.status)" class="btn btn-info btn-center">
-                                        <i class="bi bi-check-lg"></i>
+                                    <button (click)="updateOrderStatus(ord.id, ord.status)" class="btn btn-sm btn-info btn-action" title="Zapisz status">
+                                        <i class="bi bi-check2"></i>
                                     </button>
                                 </div>
                             </td>
                             <td>
-                                <button (click)="deleteOrder(ord.id)" class="btn btn-danger btn-center">
-                                    <i class="bi bi-trash"></i>
+                                <button (click)="deleteOrder(ord.id)" class="btn btn-sm btn-outline-danger btn-action" title="Usuń trwale">
+                                    <i class="bi bi-trash3"></i>
                                 </button>
                             </td>
                         </tr>
@@ -79,61 +115,46 @@
             </div>
         </div>
 
-        <div class="glass p-4 mb-5 shadow" id="uzytkownicy">
-            <h2 class="h4 text-warning mb-4"><i class="bi bi-people-fill me-2"></i> Zarządzanie Użytkownikami</h2>
-            <div class="table-responsive">
-                <table class="table align-middle table-bordered border-secondary text-center text-white">
-                    <thead><tr><th>E-mail</th><th>Rola</th><th>Zmień</th><th>Usuń</th></tr></thead>
-                    <tbody>
-                        <tr *ngFor="let u of allUsers">
-                            <td class="text-start">{{ u.email }}</td>
-                            <td><span class="badge" [class]="u.role === 'admin' ? 'bg-danger' : 'bg-primary'">{{ u.role | uppercase }}</span></td>
-                            <td>
-                                <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <select [(ngModel)]="u.newRole" class="form-select form-select-sm w-auto panel-input">
-                                        <option value="user">User</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                    <button (click)="updateUserRole(u)" class="btn btn-info btn-center"><i class="bi bi-check-lg"></i></button>
-                                </div>
-                            </td>
-                            <td>
-                                <button *ngIf="u.id !== currentUserId" (click)="deleteUser(u.id)" class="btn btn-danger btn-center"><i class="bi bi-trash"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="glass p-4 shadow" id="magazyn">
-            <h2 class="h4 text-success mb-4"><i class="bi bi-bookshelf me-2"></i> Magazyn</h2>
+        <!-- ADMIN: MAGAZYN -->
+        <div class="glass p-4 mb-5 shadow-lg border-success-subtle">
+            <h2 class="h4 text-success mb-4"><i class="bi bi-box-fill me-2"></i> Magazyn i Produkty</h2>
             
-            <form (submit)="addBook($event)" class="row g-2 mb-4 p-3 glass" style="background: rgba(0,0,0,0.2) !important;">
-                <div class="col-md-3"><input type="text" [(ngModel)]="newBook.title" name="t" class="form-control panel-input" placeholder="Tytuł" required></div>
+            <form (submit)="addBook($event)" class="row g-2 mb-4 p-3 rounded-4 bg-black bg-opacity-25 border border-white-10">
+                <div class="col-md-3"><input type="text" [(ngModel)]="newBook.title" name="t" class="form-control panel-input" placeholder="Tytuł książki" required></div>
                 <div class="col-md-2"><input type="text" [(ngModel)]="newBook.author" name="a" class="form-control panel-input" placeholder="Autor" required></div>
-                <div class="col-md-2"><input type="number" step="0.01" [(ngModel)]="newBook.price" name="p" class="form-control panel-input" placeholder="Cena" required></div>
-                <div class="col-md-2"><input type="number" [(ngModel)]="newBook.stock" name="s" class="form-control panel-input" placeholder="Ilość" required></div>
-                <div class="col-md-3"><input type="file" (change)="onFileSelected($event)" class="form-control panel-input"></div>
-                <div class="col-12 mt-2"><button type="submit" class="btn btn-success w-100 fw-bold">DODAJ NOWĄ KSIĄŻKĘ</button></div>
+                <div class="col-md-2"><input type="number" step="0.01" [(ngModel)]="newBook.price" name="p" class="form-control panel-input" placeholder="Cena (zł)" required></div>
+                <div class="col-md-1"><input type="number" [(ngModel)]="newBook.stock" name="s" class="form-control panel-input" placeholder="Ilość" required></div>
+                <div class="col-md-2"><input type="file" (change)="onFileSelected($event)" class="form-control panel-input small-file"></div>
+                <div class="col-md-2"><button type="submit" class="btn btn-success w-100 fw-bold h-100">DODAJ</button></div>
             </form>
 
             <div class="table-responsive">
-                <table class="table align-middle table-bordered border-secondary text-center text-white">
-                    <thead><tr><th>Foto</th><th class="text-start">Tytuł</th><th>Cena & Stan</th><th>Akcja</th></tr></thead>
+                <table class="table align-middle text-white">
+                    <thead class="text-secondary small">
+                        <tr>
+                            <th>Foto</th>
+                            <th class="text-start">Tytuł</th>
+                            <th>Cena & Stan</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr *ngFor="let b of allBooks">
-                            <td><img [src]="'http://192.168.254.110:3000/img/' + b.image" class="book-thumb" style="width: 40px; height: 60px; object-fit: cover;"></td>
-                            <td class="text-start fw-bold">{{ b.title }}</td>
+                        <tr *ngFor="let b of allBooks" class="border-bottom border-white-10">
                             <td>
-                                <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <input type="number" step="0.01" [(ngModel)]="b.price" class="panel-input text-center" style="width:80px">
-                                    <input type="number" [(ngModel)]="b.stock" class="panel-input text-center" style="width:65px">
-                                    <button (click)="updateBook(b)" class="btn btn-primary btn-center"><i class="bi bi-check-lg"></i></button>
+                                <img [src]="'http://192.168.254.110:3000/img/' + b.image" 
+                                     class="rounded shadow-sm border border-white-10" 
+                                     style="width: 35px; height: 50px; object-fit: cover;">
+                            </td>
+                            <td class="text-start fw-bold small">{{ b.title }}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <input type="number" step="0.01" [(ngModel)]="b.price" class="panel-input text-center px-1" style="width:70px" title="Cena">
+                                    <input type="number" [(ngModel)]="b.stock" class="panel-input text-center px-1" style="width:50px" title="Stan magazynowy">
+                                    <button (click)="updateBook(b)" class="btn btn-sm btn-primary btn-action"><i class="bi bi-save"></i></button>
                                 </div>
                             </td>
                             <td>
-                                <button (click)="deleteBook(b.id)" class="btn btn-danger btn-center"><i class="bi bi-trash"></i></button>
+                                <button (click)="deleteBook(b.id)" class="btn btn-sm btn-danger btn-action"><i class="bi bi-x-lg"></i></button>
                             </td>
                         </tr>
                     </tbody>

@@ -1,39 +1,55 @@
-<nav class="navbar navbar-expand-lg navbar-dark glass sticky-top mb-4 shadow">
+<nav class="navbar navbar-expand-lg navbar-dark glass sticky-top mb-4 shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold" routerLink="/">📚 KSIĘGARNIA</a>
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/">
+            <span class="fs-4 me-2">📚</span>
+            <span class="brand-text">KSIĘGARNIA</span>
+        </a>
         
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <!-- Przycisk Mobile (Hamburger) -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         
+        <!-- Menu -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item"><a class="nav-link" routerLink="/">Sklep</a></li>
-                
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="/cart">
-                        Koszyk <span class="badge bg-info text-dark">{{ totalInCart }}</span>
+                    <a class="nav-link px-3" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                        <i class="bi bi-house-door me-1"></i> Sklep
                     </a>
                 </li>
                 
+                <!-- Koszyk z dynamicznym badgem -->
+                <li class="nav-item">
+                    <a class="nav-link px-3" routerLink="/cart" routerLinkActive="active">
+                        <i class="bi bi-cart3 me-1"></i> Koszyk
+                        <span class="badge rounded-pill bg-info text-dark ms-1" *ngIf="totalInCart > 0">
+                            {{ totalInCart }}
+                        </span>
+                    </a>
+                </li>
+                
+                <!-- Sekcja dla zalogowanych -->
                 <ng-container *ngIf="isLoggedIn">
                     <li class="nav-item">
-                        <a class="nav-link text-info fw-bold" routerLink="/panel">
+                        <a class="nav-link px-3 text-info fw-bold" routerLink="/panel" routerLinkActive="active">
                             <i class="bi bi-person-gear me-1"></i>
-                            {{ isAdmin ? 'Panel Sterowania' : 'Panel Użytkownika' }}
+                            {{ isAdmin ? 'Panel Admina' : 'Moje Konto' }}
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="btn btn-sm btn-outline-danger ms-lg-3" (click)="logout()" style="cursor: pointer;">
+                    <li class="nav-item ms-lg-2">
+                        <button class="btn btn-outline-danger btn-sm px-3 rounded-pill" (click)="logout()">
                             <i class="bi bi-box-arrow-right me-1"></i> Wyloguj
-                        </a>
+                        </button>
                     </li>
                 </ng-container>
 
+                <!-- Sekcja dla niezalogowanych -->
                 <ng-container *ngIf="!isLoggedIn">
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/login">
-                            <i class="bi bi-person-circle me-1"></i> Logowanie
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-info btn-sm px-4 fw-bold rounded-pill shadow-sm" routerLink="/login">
+                            <i class="bi bi-person-circle me-1"></i> Zaloguj
                         </a>
                     </li>
                 </ng-container>

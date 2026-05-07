@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router'; // Dodano RouterModule dla routerLink
+import { ApiService } from './services/api';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
@@ -19,22 +19,25 @@ export class Register {
     nazwisko: ''
   };
   errorMessage: string = '';
+  isLoading: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private api: ApiService, private router: Router) {}
 
   onRegister(event: Event) {
     event.preventDefault();
     this.errorMessage = '';
+    this.isLoading = true;
 
-    this.http.post('http://192.168.254.110:3000/ksiegarnia-api/register', this.regData)
-      .subscribe({
-        next: () => {
-          // Po sukcesie przekieruj do logowania z parametrem msg
-          this.router.navigate(['/login'], { queryParams: { msg: 'success' } });
-        },
-        error: (err) => {
-          this.errorMessage = err.error.message || 'Błąd rejestracji';
-        }
-      });
+    this.api.register(this.regData).subscribe({
+      next: () => {
+        this.isLoading = false;
+        // Przekierowanie do logowania z informacją o sukcesie
+        this.router.navigate(['/login'], { queryParams: { registered: 'true' } });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Wystąpił nieoczekiwany błąd rejestracji.';
+      }
+    });
   }
 }

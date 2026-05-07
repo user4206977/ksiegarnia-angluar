@@ -1,11 +1,69 @@
 .glass {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(15px) !important;
-    -webkit-backdrop-filter: blur(15px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    /* Zmniejszamy nieprzezroczystość (0.02 zamiast 0.7), aby prześwitywało tło strony */
+    background: rgba(255, 255, 255, 0.02) !important;
+    
+    /* Zwiększamy rozmycie tła dla lepszego efektu szkła */
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    
+    /* Bardzo cienka i subtelna linia na dole */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    
+    /* Wyłączamy mocny cień na rzecz delikatnej poświaty */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Żeby navbar nie zasłaniał treści przy sticky-top */
-.navbar {
-    z-index: 1000;
+/* Tekst logo - zróbmy go mniej kontrastowym */
+.brand-text {
+    letter-spacing: 1px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+    /* Subtelny gradient zamiast mocnego świecenia */
+    background: linear-gradient(90deg, #ffffff, #0dcaf0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Linki w menu - bardziej stonowane kolory */
+.nav-link {
+    transition: all 0.3s ease;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6) !important; /* Szary/przezroczysty biały */
+    font-size: 0.95rem;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: #0dcaf0 !important; /* Akcent kolorystyczny tylko przy interakcji */
+}
+
+/* Badge koszyka - mniejszy i delikatniejszy */
+.badge {
+    font-size: 0.65rem;
+    padding: 0.35em 0.65em;
+    background-color: rgba(13, 202, 240, 0.8) !important; /* Lekki turkus */
+    color: #000 !important;
+}
+
+/* Przycisk wyloguj - subtelniejszy obrys */
+.btn-outline-danger {
+    border-color: rgba(220, 53, 69, 0.4) !important;
+    color: rgba(220, 53, 69, 0.8) !important;
+    background: transparent !important;
+}
+
+.btn-outline-danger:hover {
+    background: rgba(220, 53, 69, 0.1) !important;
+    border-color: rgba(220, 53, 69, 1) !important;
+}
+
+/* Poprawka dla mobile, żeby menu nie było czarnym blokiem */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: rgba(20, 20, 20, 0.6); /* Półprzezroczyste tło w mobile */
+        backdrop-filter: blur(10px);
+        margin-top: 10px;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 }

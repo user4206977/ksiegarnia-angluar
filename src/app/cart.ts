@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from './services/api';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-cart',
@@ -11,10 +12,12 @@ import { Router } from '@angular/router';
   templateUrl: './cart.html',
   styleUrl: './cart.css'
 })
-export class Cart implements OnInit {
+export class Cart implements OnInit, OnDestroy {
   cartItems: any[] = [];
   totalPrice: number = 0;
   private cartKey = 'cart_guest';
+  /** Subject służący do automatycznego odpinania subskrypcji */
+  private destroy$ = new Subject<void>();
 
   constructor(
     private api: ApiService, 
@@ -22,24 +25,37 @@ export class Cart implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
-    this.api.user$.subscribe(() => {
-      this.refreshCart();
-    });
+  ngOnInit(): void {
+    /** 
+     * Reagujemy na zmiany statusu użytkownika. 
+     * takeUntil(this.destroy$) zapobiega wyciekom pamięci.
+     */
+    this.api.user$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.refreshCart();
+      });
   }
 
-  refreshCart() {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Ustala klucz koszyka na podstawie zalogowanego użytkownika 
+   * i inicjuje ładowanie danych.
+   */
+  refreshCart(): void {
     const userJson = localStorage.getItem('user');
-    if (userJson) {
-      const user = JSON.parse(userJson);
-      this.cartKey = `cart_${user.id}`;
-    } else {
-      this.cartKey = 'cart_guest';
-    }
+    this.cartKey = userJson ? `cart_${JSON.parse(userJson).id}` : 'cart_guest';
     this.loadCart();
   }
 
-  loadCart() {
+  /**
+   * Pobiera dane o produktach z serwera i paruje je z ilościami z localStorage.
+   */
+  loadCart(): void {
     const rawData = localStorage.getItem(this.cartKey);
     const cart = JSON.parse(rawData || '{}');
     const idsInCart = Object.keys(cart);
@@ -70,13 +86,14 @@ export class Cart implements OnInit {
         this.cartItems = tempItems;
         this.totalPrice = tempTotal;
         this.api.updateCartCount();
-        this.cdr.detectChanges(); // Powiadom Angulara, że dane są gotowe do wyświetlenia
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error("Błąd API:", err)
+      error: (err) => console.error("Błąd pobierania produktów do koszyka:", err)
     });
   }
 
-  updateQty(id: number, newQty: number) {
+  /** Aktualizuje ilość wybranego produktu w pamięci lokalnej */
+  updateQty(id: number, newQty: number): void {
     if (newQty < 1) return;
     let cart = JSON.parse(localStorage.getItem(this.cartKey) || '{}');
     cart[id] = newQty;
@@ -84,34 +101,36 @@ export class Cart implements OnInit {
     this.loadCart();
   }
 
-  removeItem(id: number) {
+  /** Usuwa produkt z koszyka */
+  removeItem(id: number): void {
     let cart = JSON.parse(localStorage.getItem(this.cartKey) || '{}');
     delete cart[id];
     localStorage.setItem(this.cartKey, JSON.stringify(cart));
     this.loadCart();
   }
 
-  placeOrder() {
+  /** Składa zamówienie i czyści koszyk po sukcesie */
+  placeOrder(): void {
     const userJson = localStorage.getItem('user');
     if (!userJson) {
-      this.router.navigate(['/login'], { queryParams: { msg: 'Musisz się zalogować, aby złożyć zamówienie!' } });
+      this.router.navigate(['/login'], { 
+        queryParams: { msg: 'Musisz się zalogować, aby złożyć zamówienie!' } 
+      });
       return;
     }
 
     const user = JSON.parse(userJson);
-    const orderItems = this.cartItems.map(item => ({
-      book_id: Number(item.id),
-      quantity: Number(item.quantity)
-    }));
-
     const orderData = {
       user_id: user.id,
       total_sum: this.totalPrice,
-      items: orderItems
+      items: this.cartItems.map(item => ({
+        book_id: Number(item.id),
+        quantity: Number(item.quantity)
+      }))
     };
 
     this.api.placeOrder(orderData).subscribe({
-      next: (res) => {
+      next: () => {
         localStorage.removeItem(this.cartKey);
         this.api.updateCartCount();
         alert("✅ Zamówienie zostało złożone pomyślnie!");
@@ -125,7 +144,8 @@ export class Cart implements OnInit {
     });
   }
 
-  trackByFn(index: number, item: any) {
+  /** Optymalizacja renderowania listy ngFor */
+  trackByFn(index: number, item: any): any {
     return item.id;
   }
 }

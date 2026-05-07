@@ -21,7 +21,7 @@ export class Panel implements OnInit {
   userOrders: any[] = [];
   allUsers: any[] = [];
   allBooks: any[] = [];
-  allOrders: any[] = []; // Nowa zmienna na zamówienia wszystkich użytkowników
+  allOrders: any[] = [];
 
   newBook = { title: '', author: '', price: 0, stock: 0 };
   selectedFile: File | null = null;
@@ -51,9 +51,9 @@ export class Panel implements OnInit {
     this.api.getMyOrders(this.currentUserId).subscribe({
       next: (res) => {
         this.userOrders = res;
-        this.cdr.detectChanges(); // Wymuś odświeżenie widoku
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error("Błąd zamówień", err)
+      error: (err) => console.error("Błąd pobierania zamówień użytkownika", err)
     });
   }
 
@@ -66,7 +66,6 @@ export class Panel implements OnInit {
       this.allBooks = res;
       this.cdr.detectChanges(); 
     });
-    // Pobieranie wszystkich zamówień dla Admina
     this.api.getAllOrdersAdmin().subscribe(res => {
       this.allOrders = res;
       this.cdr.detectChanges();
@@ -76,8 +75,7 @@ export class Panel implements OnInit {
   changePassword(e: Event) {
     e.preventDefault();
     if (this.passData.new1 !== this.passData.new2) {
-      this.passMsg = "Hasła nie są identyczne!";
-      this.passMsgType = 'error';
+      this.showMsg("Hasła nie są identyczne!", 'error');
       return;
     }
     this.api.changePassword({
@@ -86,38 +84,41 @@ export class Panel implements OnInit {
       newPass: this.passData.new1
     }).subscribe({
       next: () => {
-        this.passMsg = "Hasło zmienione!";
-        this.passMsgType = 'success';
+        this.showMsg("Hasło zostało pomyślnie zmienione!", 'success');
         this.passData = { old: '', new1: '', new2: '' };
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.passMsg = err.error?.message || "Błąd zmiany hasła!";
-        this.passMsgType = 'error';
+        this.showMsg(err.error?.message || "Błąd zmiany hasła!", 'error');
         this.cdr.detectChanges();
       }
     });
   }
 
+  private showMsg(msg: string, type: 'success' | 'error') {
+    this.passMsg = msg;
+    this.passMsgType = type;
+    setTimeout(() => { this.passMsg = ''; this.cdr.detectChanges(); }, 5000);
+  }
+
   getStatusClass(status: string) {
-    if (!status) return 'bg-secondary';
+    if (!status) return 'status-default';
     const s = status.toUpperCase();
-    if (s.includes('ANULOWANE')) return 'bg-danger';
-    if (s.includes('REALIZACJI')) return 'bg-warning text-dark';
-    if (s.includes('DO ODBIORU')) return 'bg-success';
-    if (s.includes('ZREALIZOWANE')) return 'bg-info text-dark';
-    return 'bg-secondary';
+    if (s.includes('ANULOWANE')) return 'status-anulowane';
+    if (s.includes('REALIZACJI')) return 'status-realizacja';
+    if (s.includes('DO ODBIORU')) return 'status-odbior';
+    if (s.includes('ZREALIZOWANE')) return 'status-zrealizowane';
+    return 'status-default';
   }
 
   updateUserRole(user: any) {
     this.api.updateUserRole(user.id, user.newRole).subscribe(() => {
-      alert("Rola zaktualizowana!");
       this.loadAdminData();
     });
   }
 
   deleteUser(id: number) {
-    if (confirm('Usunąć użytkownika?')) {
+    if (confirm('Czy na pewno chcesz usunąć tego użytkownika?')) {
       this.api.deleteUser(id).subscribe(() => this.loadAdminData());
     }
   }
@@ -136,35 +137,32 @@ export class Panel implements OnInit {
     if (this.selectedFile) fd.append('foto', this.selectedFile);
 
     this.api.addBook(fd).subscribe(() => {
-      alert("Książka dodana!");
       this.newBook = { title: '', author: '', price: 0, stock: 0 };
+      this.selectedFile = null;
       this.loadAdminData();
     });
   }
 
   updateBook(book: any) {
     this.api.updateBook(book.id, { price: book.price, stock: book.stock }).subscribe(() => {
-      alert("Zaktualizowano!");
       this.loadAdminData();
     });
   }
 
   deleteBook(id: number) {
-    if (confirm('Usunąć książkę?')) {
+    if (confirm('Usunąć tę książkę z bazy?')) {
       this.api.deleteBook(id).subscribe(() => this.loadAdminData());
     }
   }
 
-  // Funkcje obsługi zamówień dla Admina
   updateOrderStatus(orderId: number, status: string) {
     this.api.updateOrderStatus(orderId, status).subscribe(() => {
-      alert("Status zamówienia zmieniony!");
       this.loadAdminData();
     });
   }
 
   deleteOrder(id: number) {
-    if (confirm('Usunąć zamówienie z bazy?')) {
+    if (confirm('Trwale usunąć zamówienie?')) {
       this.api.deleteOrder(id).subscribe(() => this.loadAdminData());
     }
   }

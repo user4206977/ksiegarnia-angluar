@@ -1,48 +1,81 @@
-.btn-center {
-    display: inline-flex !important;
+/* Główne kontenery */
+.glass {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Pola wejściowe w panelu */
+.panel-input, .panel-input-select {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.panel-input:focus {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-color: #0dcaf0 !important;
+    box-shadow: 0 0 10px rgba(13, 202, 240, 0.2);
+}
+
+.small-file {
+    font-size: 0.75rem;
+    padding: 0.4rem;
+}
+
+/* Przyciski akcji (małe kwadraty) */
+.btn-action {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px !important;
-    height: 34px !important;
-    padding: 0 !important;
-    vertical-align: middle;
+    border-radius: 8px;
+    transition: transform 0.2s;
 }
 
-.btn-center i {
-    line-height: 0 !important;
-    display: inline-block;
-    margin: 0;
+.btn-action:hover {
+    transform: scale(1.1);
 }
 
-.panel-input {
-    height: 36px;
-    background: rgba(255,255,255,0.05) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    color: white !important;
-    text-align: center;
-    border-radius: 5px;
+/* Tabele */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: white;
+    margin-bottom: 0;
 }
 
-/* Statusy zamówień */
-.status-anulowane { background-color: #ef4444; }
-.status-realizacja { background-color: #f59e0b; }
-.status-odbior { background-color: #10b981; }
-.status-zrealizowane { background-color: #3b82f6; }
+.border-white-10 {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
 
-/* Alerty Glass */
+/* Specyficzne statusy */
+.status-anulowane { background: #dc3545 !important; color: white; }
+.status-realizacja { background: #ffc107 !important; color: #000; }
+.status-odbior { background: #198754 !important; color: white; }
+.status-zrealizowane { background: #0dcaf0 !important; color: #000; }
+.status-default { background: #6c757d !important; color: white; }
+
+/* Custom Alerty */
 .alert-success-custom {
-    background: rgba(74, 222, 128, 0.15) !important;
+    background: rgba(25, 135, 84, 0.1) !important;
     color: #4ade80;
-    border-left: 4px solid #4ade80 !important;
+    border: 1px solid rgba(74, 222, 128, 0.2) !important;
 }
 
 .alert-danger-custom {
-    background: rgba(239, 68, 68, 0.15) !important;
+    background: rgba(220, 53, 69, 0.1) !important;
     color: #f87171;
-    border-left: 4px solid #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.2) !important;
 }
 
-select.form-select option {
-  color: black;
-  background-color: white;
+/* Style dla selectów */
+select.panel-input-select option {
+    background-color: #1a1a1a;
+    color: white;
 }

@@ -2,33 +2,40 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-11 col-sm-8 col-md-5 col-lg-4">
+                
                 <form (submit)="onLogin($event)" class="glass p-5 text-center shadow-lg">
                     <h2 class="mb-4 fw-bold text-info border-bottom pb-3">LOGOWANIE</h2>
                     
+                    <!-- Wyświetlanie błędów logowania -->
                     <div *ngIf="errorMessage" class="alert alert-danger p-2 small mb-3">
-                        {{ errorMessage }}
+                        <i class="bi bi-exclamation-circle me-2"></i> {{ errorMessage }}
                     </div>
                     
+                    <!-- Pole E-mail -->
                     <div class="form-floating mb-3">
-                        <input type="email" [(ngModel)]="email" name="nazwa" 
-                               class="form-control" id="fEmail" required>
+                        <input type="email" [(ngModel)]="email" name="email" 
+                               class="form-control" id="fEmail" placeholder="name@example.com" required>
                         <label for="fEmail" class="text-secondary">Adres e-mail</label>
                     </div>
                     
+                    <!-- Pole Hasło -->
                     <div class="form-floating mb-4">
-                        <input type="password" [(ngModel)]="password" name="haslo" 
-                               class="form-control" id="fPass" required>
+                        <input type="password" [(ngModel)]="password" name="password" 
+                               class="form-control" id="fPass" placeholder="Hasło" required>
                         <label for="fPass" class="text-secondary">Hasło</label>
                     </div>
 
-                    <button type="submit" class="btn btn-info btn-lg w-100 fw-bold text-white mb-3">
-                        ZALOGUJ
+                    <!-- Przycisk z blokadą podczas ładowania -->
+                    <button type="submit" [disabled]="isLoading" class="btn btn-info btn-lg w-100 fw-bold text-white mb-3">
+                        <span *ngIf="!isLoading">ZALOGUJ</span>
+                        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
                     </button>
                     
-                    <div class="small text-main">
+                    <div class="small text-white opacity-75">
                         Nie masz konta? <a routerLink="/register" class="text-info text-decoration-none fw-bold">Załóż je tutaj</a>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

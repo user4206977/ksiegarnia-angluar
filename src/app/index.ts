@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // Dodano ChangeDetectorRef
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from './services/api';
@@ -11,78 +11,102 @@ import { ApiService } from './services/api';
   styleUrl: './index.css'
 })
 export class Index implements OnInit {
+  /** Pełna lista książek pobrana z serwera */
   books: any[] = [];
+  /** Lista książek po zastosowaniu filtrów i sortowania */
   filteredBooks: any[] = []; 
+  /** Fraza wyszukiwania wpisana przez użytkownika */
   searchTerm: string = '';
+  /** Aktualny tryb sortowania */
   sortBy: string = 'alpha'; 
   
+  /** Obiekt przechowujący wybraną ilość dla każdej książki (klucz to ID książki) */
   quantities: { [key: number]: number } = {};
+  /** Treść komunikatu zwrotnego */
   msg: string = '';
+  /** ID ostatnio modyfikowanej książki (do wyświetlania komunikatów) */
   lastAddedId: number | null = null;
 
-  // Wstrzykujemy cdr
   constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.loadBooks();
+  }
+
+  /** Pobiera dane z API i inicjuje widok */
+  loadBooks(): void {
     this.api.getBooks().subscribe({
       next: (data) => {
-        console.log("Odebrano dane z serwera:", data);
         this.books = data;
-        
-        // Inicjalizacja ilości
-        data.forEach(b => this.quantities[b.id] = 1);
-        
-        // Wywołujemy filtrowanie
+        // Inicjalizacja domyślnej ilości (1) dla każdej książki
+        data.forEach(b => {
+          if (!this.quantities[b.id]) this.quantities[b.id] = 1;
+        });
         this.applyFilters();
-        
-        // KLUCZOWE: Ręczne wymuszenie odświeżenia widoku
         this.cdr.detectChanges();
       },
-      error: (err) => console.error("Błąd ładowania:", err)
+      error: (err) => console.error("Błąd ładowania książek:", err)
     });
   }
 
-  applyFilters() {
-    let tempBooks = [...this.books]; // Startujemy od kopii wszystkich książek
+  /**
+   * Główna logika filtrowania i sortowania.
+   * Wywoływana przy każdej zmianie w polu wyszukiwania lub selectu.
+   */
+  applyFilters(): void {
+    let tempBooks = [...this.books];
 
-    // 1. Filtrowanie
+    // 1. Filtrowanie po tytule i autorze
     if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
       tempBooks = tempBooks.filter(b => 
-        b.title.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-        (b.author && b.author.toLowerCase().includes(this.searchTerm.toLowerCase()))
+        b.title.toLowerCase().includes(term) || 
+        (b.author && b.author.toLowerCase().includes(term))
       );
     }
 
-    // 2. Sortowanie
-    if (this.sortBy === 'price-asc') {
-      tempBooks.sort((a, b) => a.price - b.price);
-    } else if (this.sortBy === 'price-desc') {
-      tempBooks.sort((a, b) => b.price - a.price);
-    } else {
-      tempBooks.sort((a, b) => a.title.localeCompare(b.title));
+    // 2. Sortowanie wyników
+    switch (this.sortBy) {
+      case 'price-asc':
+        tempBooks.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        tempBooks.sort((a, b) => b.price - a.price);
+        break;
+      case 'alpha':
+        tempBooks.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      default:
+        // Opcjonalnie: domyślne sortowanie (np. po ID)
+        break;
     }
     
     this.filteredBooks = tempBooks;
-    this.cdr.detectChanges(); // Powtarzamy odświeżenie po przeliczeniu filtrów
+    this.cdr.detectChanges();
   }
 
-  // --- Reszta metod bez zmian ---
-  getAvailable(book: any) {
-    const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+  /** Oblicza ile sztuk danej książki można jeszcze dodać do koszyka */
+  getAvailable(book: any): number {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const cartKey = user.id ? `cart_${user.id}` : 'cart_guest';
+    const cart = JSON.parse(localStorage.getItem(cartKey) || '{}');
     const inCart = cart[book.id] || 0;
     return book.stock - inCart;
   }
 
-  changeQty(book: any, delta: number) {
+  /** Zmienia wybraną ilość w selektorze (przyciski + i -) */
+  changeQty(book: any, delta: number): void {
     const current = this.quantities[book.id] || 1;
     const available = this.getAvailable(book);
     const newVal = current + delta;
+    
     if (newVal >= 1 && newVal <= available) {
       this.quantities[book.id] = newVal;
     }
   }
 
-  addToCart(book: any) {
+  /** Dodaje wybraną ilość książki do lokalnego magazynu (koszyka) */
+  addToCart(book: any): void {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const cartKey = user.id ? `cart_${user.id}` : 'cart_guest';
 
@@ -91,27 +115,33 @@ export class Index implements OnInit {
     const currentlyInCart = cart[book.id] || 0;
 
     if (currentlyInCart + qtyToAdd <= book.stock) {
-      // 1. Aktualizacja w localStorage
+      // Aktualizacja localStorage
       cart[String(book.id)] = currentlyInCart + qtyToAdd;
       localStorage.setItem(cartKey, JSON.stringify(cart));
       
-      // 2. AKTUALIZACJA WIZUALNA (zmniejszamy stock w obiekcie, który wyświetla Angular)
-      book.stock -= qtyToAdd; 
-      
-      // 3. Powiadomienie serwisu
+      // Powiadomienie serwisu API o zmianie (np. odświeżenie licznika na navbarze)
       this.api.updateCartCount();
 
-      this.msg = `✅ Dodano do koszyka!`;
-      this.lastAddedId = book.id;
+      this.showFeedback(book.id, `✅ Dodano do koszyka!`);
       
-      setTimeout(() => {
-          this.lastAddedId = null;
-          this.cdr.detectChanges();
-      }, 3000);
+      // Reset selektora ilości do 1 po pomyślnym dodaniu
+      this.quantities[book.id] = 1;
     } else {
-      this.msg = `❌ Brak towaru!`;
-      this.lastAddedId = book.id;
+      this.showFeedback(book.id, `❌ Brak wystarczającej ilości!`);
     }
     this.cdr.detectChanges();
+  }
+
+  /** Wyświetla czasowy komunikat przy danej karcie produktu */
+  private showFeedback(bookId: number, message: string): void {
+    this.msg = message;
+    this.lastAddedId = bookId;
+    
+    setTimeout(() => {
+      if (this.lastAddedId === bookId) {
+        this.lastAddedId = null;
+        this.cdr.detectChanges();
+      }
+    }, 3000);
   }
 }

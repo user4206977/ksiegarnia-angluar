@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { ApiService } from './services/api'; // Zaimportuj ApiService
+import { ApiService } from './services/api'; // Używamy tylko serwisu
 
 @Component({
   selector: 'app-login',
@@ -16,22 +15,28 @@ export class Login {
   email = '';
   password = '';
   errorMessage = '';
+  isLoading = false;
 
   constructor(
-    private http: HttpClient, 
     private router: Router,
-    private api: ApiService // Wstrzyknij ApiService
+    private api: ApiService // HttpClient już nie jest tu potrzebny
   ) {}
 
   onLogin(event: Event) {
     event.preventDefault();
 
-    const loginData = {
-      email: this.email,
-      password: this.password
-    };
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Wprowadź dane logowania.';
+      return;
+    }
 
-    this.http.post<any>('http://192.168.254.110:3000/ksiegarnia-api/login', loginData).subscribe({
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    const loginData = { email: this.email, password: this.password };
+
+    // WYWOŁANIE METODY Z SERWISU
+    this.api.login(loginData).subscribe({
       next: (res) => {
         const userToSave = {
           id: res.user.id,
@@ -41,14 +46,15 @@ export class Login {
         
         localStorage.setItem('user', JSON.stringify(userToSave));
         
-        // POWIADOM API O ZMIANIE STATUSU
+        // POWIADOM API O ZMIANIE STATUSU (to już masz w serwisie)
         this.api.updateUserStatus(); 
         
         console.log("Zalogowano pomyślnie:", userToSave);
         this.router.navigate(['/panel']); 
       },
       error: (err) => {
-        this.errorMessage = err.error.message || 'Błąd logowania';
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Błąd logowania';
       }
     });
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { ApiService } from './services/api'; // Zaimportuj ApiService
+import { ApiService } from './services/api';
 
 @Component({
   selector: 'app-navbar',
@@ -11,20 +11,27 @@ import { ApiService } from './services/api'; // Zaimportuj ApiService
   styleUrl: './navbar.css',
 })
 export class Navbar implements OnInit {
+  /** Całkowita liczba przedmiotów w koszyku */
   totalInCart: number = 0;
+  /** Czy użytkownik jest obecnie zalogowany */
   isLoggedIn: boolean = false;
+  /** Czy zalogowany użytkownik posiada uprawnienia administratora */
   isAdmin: boolean = false;
 
   constructor(
     private router: Router,
-    private api: ApiService // Wstrzyknij ApiService
+    private api: ApiService
   ) {}
 
-  ngOnInit() {
-    // SUBSKRYPCJA STATUSU UŻYTKOWNIKA
+  ngOnInit(): void {
+    /** 
+     * Subskrypcja statusu użytkownika. 
+     * Reaguje na logowanie i wylogowanie w czasie rzeczywistym.
+     */
     this.api.user$.subscribe(user => {
       if (user) {
         this.isLoggedIn = true;
+        // Sprawdzenie roli (case-insensitive dla bezpieczeństwa)
         this.isAdmin = user.role && user.role.toLowerCase() === 'admin';
       } else {
         this.isLoggedIn = false;
@@ -32,22 +39,26 @@ export class Navbar implements OnInit {
       }
     });
 
+    /** 
+     * Subskrypcja licznika koszyka.
+     * Automatycznie aktualizuje badge przy zmianach w localStorage.
+     */
     this.api.cart$.subscribe(count => this.totalInCart = count);
+    
+    // Inicjalne pobranie stanu koszyka przy starcie komponentu
     this.api.updateCartCount();
   }
 
-  updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-    this.totalInCart = Object.values(cart).reduce((a: any, b: any) => a + b, 0) as number;
-  }
-
-  logout() {
+  /**
+   * Czyści sesję użytkownika i powiadamia aplikację o zmianie stanu.
+   */
+  logout(): void {
     localStorage.removeItem('user');
     
-    // POWIADOM API O WYLOGOWANIU
+    // Powiadomienie serwisu, aby user$ wyemitował null
     this.api.updateUserStatus(); 
 
+    // Przekierowanie na stronę główną lub logowanie
     this.router.navigate(['/login']);
-    // Już nie potrzebujemy window.location.reload(), bo subskrypcja sama odświeży Navbar!
   }
 }

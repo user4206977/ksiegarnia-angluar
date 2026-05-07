@@ -1,71 +1,97 @@
 <main class="container py-5">
-    <div class="search-container mb-5">
+    <!-- Sekcja wyszukiwania i filtrów -->
+    <section class="search-container mb-5">
         <div class="row g-2 justify-content-center">
             <div class="col-md-6">
                 <div class="input-group">
-                    <span class="input-group-text glass border-end-0 text-secondary"><i class="bi bi-search"></i></span>
-                    <input type="text" [(ngModel)]="searchTerm" (input)="applyFilters()" class="form-control glass border-start-0 text-white" 
+                    <span class="input-group-text glass border-end-0 text-secondary">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" 
+                           [(ngModel)]="searchTerm" 
+                           (input)="applyFilters()" 
+                           class="form-control glass border-start-0 text-white" 
                            placeholder="Szukaj tytułu lub autora...">
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <select [(ngModel)]="sortBy" (change)="applyFilters()" class="form-select glass text-white">
-                    <option value="default">Domyślnie</option>
+                    <option value="alpha">Nazwa: A-Z</option>
                     <option value="price-asc">Cena: rosnąco</option>
                     <option value="price-desc">Cena: malejąco</option>
-                    <option value="alpha">Nazwa: A-Z</option>
                 </select>
             </div>
         </div>
-    </div>
+    </section>
 
-    <h2 class="mb-4 text-info">Wszystkie książki</h2>
+    <h2 class="mb-4 text-info">Nasza oferta</h2>
 
+    <!-- Grid z książkami -->
     <div class="row g-4" id="booksGrid">
         <div class="col-12 col-md-6 col-lg-4 col-xl-3" *ngFor="let book of filteredBooks">
-            <div class="card glass h-100 border-0 shadow text-white book-card">
+            <article class="card glass h-100 border-0 shadow text-white book-card">
+                <!-- Okładka -->
                 <div class="text-center p-3">
                     <img [src]="book.image ? 'http://192.168.254.110:3000/img/' + book.image : 'http://192.168.254.110:3000/img/default.png'" 
                          [alt]="book.title"
-                         style="height: 200px; object-fit: contain; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.5));">
+                         class="img-fluid book-thumbnail">
                 </div>
-                <div class="card-body d-flex flex-column text-center">
-                    <h5 class="fw-bold mb-1 small text-uppercase">{{ book.title }}</h5>
-                    <p class="text-light small mb-3"><em>{{ book.author || 'Nieznany' }}</em></p>
-                    
-                    <p class="fs-4 text-info fw-bold mt-auto mb-1">{{ book.price | number:'1.2-2' }} zł</p>
-                    <p class="small text-white opacity-50 mb-3">Dostępne: {{ book.stock }} szt.</p>
 
+                <!-- Dane o książce -->
+                <div class="card-body d-flex flex-column text-center">
+                    <h5 class="fw-bold mb-1 small text-uppercase text-truncate" [title]="book.title">
+                        {{ book.title }}
+                    </h5>
+                    <p class="text-light small mb-3">
+                        <em>{{ book.author || 'Autor nieznany' }}</em>
+                    </p>
+                    
+                    <p class="fs-4 text-info fw-bold mt-auto mb-1">
+                        {{ book.price | number:'1.2-2' }} zł
+                    </p>
+                    <p class="small text-white opacity-50 mb-3">
+                        Dostępność: {{ book.stock }} szt.
+                    </p>
+
+                    <!-- Interakcje (ilość i dodawanie) -->
                     <div *ngIf="getAvailable(book) > 0; else outOfStock">
                         <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
-                            <button type="button" class="btn btn-sm btn-outline-secondary text-white btn-qty" 
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-light btn-qty" 
                                     (click)="changeQty(book, -1)">-</button>
                             
-                            <input type="number" class="qty-input-shop" [value]="quantities[book.id] || 1" readonly>
+                            <input type="number" 
+                                   class="qty-input-shop" 
+                                   [value]="quantities[book.id] || 1" 
+                                   readonly>
                             
-                            <button type="button" class="btn btn-sm btn-outline-secondary text-white btn-qty" 
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-light btn-qty" 
                                     (click)="changeQty(book, 1)">+</button>
                         </div>
 
                         <button (click)="addToCart(book)" class="btn btn-info w-100 shadow-sm">
-                            <i class="bi bi-cart-plus me-1"></i> DODAJ
+                            <i class="bi bi-cart-plus me-1"></i> DODAJ DO KOSZYKA
                         </button>
                     </div>
 
+                    <!-- Brak towaru -->
                     <ng-template #outOfStock>
-                        <button class="btn btn-outline-danger w-100 disabled">BRAK SZTUK</button>
+                        <button class="btn btn-outline-danger w-100 disabled text-uppercase">Brak w magazynie</button>
                     </ng-template>
 
+                    <!-- Komunikat o akcji -->
                     <div *ngIf="lastAddedId === book.id" class="mt-2 small fw-bold text-success animate-pulse">
                         {{ msg }}
                     </div>
                 </div>
-            </div>
+            </article>
         </div>
     </div>
     
+    <!-- Stan pusty -->
     <div *ngIf="filteredBooks.length === 0" class="text-center py-5 text-secondary">
-        <i class="bi bi-search fs-1 mb-3 d-block"></i>
-        <h3>Nie znaleziono takiej książki...</h3>
+        <i class="bi bi-book fs-1 mb-3 d-block opacity-25"></i>
+        <h3>Nie znaleźliśmy książek pasujących do Twoich kryteriów...</h3>
     </div>
 </main>
